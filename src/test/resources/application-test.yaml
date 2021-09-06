@@ -1,0 +1,8 @@
+spring:
+  cache:
+    type: none
+  datasource:
+    port: "8043"
+
+vote:
+  deadline: "11:00:00"

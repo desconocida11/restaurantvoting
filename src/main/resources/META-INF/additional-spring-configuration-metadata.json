@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "vote.deadline",
+      "type": "java.time.LocalTime",
+      "description": "The deadline time for voting after which you can't change vote."
+    },
+    {
+      "name": "spring.datasource.port",
+      "type": "java.lang.String",
+      "description": "Port to connect to H2 embedded DB."
+    }
+  ] }
