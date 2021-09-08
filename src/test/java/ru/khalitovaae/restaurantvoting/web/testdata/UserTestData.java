@@ -15,32 +15,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 @UtilityClass
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals", "password");
-    public static MatcherFactory.Matcher<User> WITH_MEALS_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "password");
+    public static MatcherFactory.Matcher<User> WITH_VOTES_MATCHER =
             MatcherFactory.usingAssertions(User.class,
 //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "meals.user", "password").isEqualTo(e),
+                            .ignoringFields("registered", "votes.user", "password").isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
                     });
 
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;
+    public static final int ADMIN_ONLY_ID = 3;
     public static final int NOT_FOUND = 100;
     public static final String USER_MAIL = "user@yandex.ru";
     public static final String ADMIN_MAIL = "admin@gmail.com";
+    public static final String ADMIN_ONLY_MAIL = "admin_only@gmail.com";
 
     public static final User user = new User(USER_ID, "User", USER_MAIL, "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", ADMIN_MAIL, "admin", Role.ADMIN, Role.USER);
-
-    static {
-//        user.setMeals(meals);
-//        admin.setMeals(List.of(adminMeal2, adminMeal1));
-    }
+    public static final User admin_only = new User(ADMIN_ONLY_ID, "AdminOnly", ADMIN_ONLY_MAIL, "admin", Role.ADMIN);
 
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", false, new Date(), Collections.singleton(Role.USER));
+    }
+
+    public static User getNewInvalid() {
+        return new User(null, null, "new@gmail.com", null, false, new Date(), Collections.singleton(Role.USER));
     }
 
     public static User getUpdated() {

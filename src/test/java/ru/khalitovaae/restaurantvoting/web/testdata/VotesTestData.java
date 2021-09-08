@@ -1,16 +1,12 @@
 package ru.khalitovaae.restaurantvoting.web.testdata;
 
 import lombok.experimental.UtilityClass;
-import ru.khalitovaae.restaurantvoting.model.Restaurant;
 import ru.khalitovaae.restaurantvoting.model.Vote;
 import ru.khalitovaae.restaurantvoting.to.VoteResultTo;
-import ru.khalitovaae.restaurantvoting.to.VoteTo;
 import ru.khalitovaae.restaurantvoting.web.MatcherFactory;
-import ru.khalitovaae.restaurantvoting.web.testdata.UserTestData;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,6 +19,10 @@ public class VotesTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(Vote.class,
                     "user", "restaurant.dishes");
+
+    public static final MatcherFactory.Matcher<Vote> VOTE_TIME_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(Vote.class,
+                    "user", "restaurant.dishes", "time");
 
     public static MatcherFactory.Matcher<VoteResultTo> VOTE_RESULT_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(VoteResultTo.class, "restaurant.dishes");
@@ -37,16 +37,12 @@ public class VotesTestData {
         return List.of(new VoteResultTo(metropol, 1L));
     }
 
-    public static List<Vote> getVotesForDate() {
-        return List.of(vote_prev_user, vote_prev_admin);
-    }
-
     public static List<Vote> getAllVotesAdmin() {
         return List.of(vote_today, vote_prev_admin);
     }
 
-    public static VoteTo getUpdated(Clock clock) {
-        return new VoteTo(VOTE_ID_TODAY, pushkin, LocalDateTime.now(clock));
+    public static Vote getUpdated(Clock clock) {
+        return new Vote(VOTE_ID_TODAY, UserTestData.admin, pushkin, LocalDate.now(clock), LocalTime.now(clock));
     }
 
     public static Vote getNew(Clock clock) {

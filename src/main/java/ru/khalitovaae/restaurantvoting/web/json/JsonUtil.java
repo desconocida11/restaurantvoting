@@ -2,7 +2,6 @@ package ru.khalitovaae.restaurantvoting.web.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.experimental.UtilityClass;
 
@@ -14,12 +13,6 @@ import static ru.khalitovaae.restaurantvoting.web.json.JacksonObjectMapper.getMa
 
 @UtilityClass
 public class JsonUtil {
-
-    private static ObjectMapper mapper;
-
-    public static void setMapper(ObjectMapper mapper) {
-        JsonUtil.mapper = mapper;
-    }
 
     public static <T> List<T> readValues(String json, Class<T> clazz) {
         ObjectReader reader = getMapper().readerFor(clazz);
@@ -51,7 +44,7 @@ public class JsonUtil {
     }
 
     public static <T> String writeAdditionProps(T obj, Map<String, Object> addProps) {
-        Map<String, Object> map = mapper.convertValue(obj, new TypeReference<>() {});
+        Map<String, Object> map = getMapper().convertValue(obj, new TypeReference<>() {});
         map.putAll(addProps);
         return writeValue(map);
     }

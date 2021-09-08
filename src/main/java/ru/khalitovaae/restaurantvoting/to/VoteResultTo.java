@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 import ru.khalitovaae.restaurantvoting.model.Restaurant;
 
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,7 @@ public class VoteResultTo {
     @Getter
     @Setter
     @NotNull
+    @Range
     private Long result;
 
     @Override

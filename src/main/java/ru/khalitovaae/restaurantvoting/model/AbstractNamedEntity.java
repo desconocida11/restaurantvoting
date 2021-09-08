@@ -1,6 +1,10 @@
 package ru.khalitovaae.restaurantvoting.model;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.khalitovaae.restaurantvoting.util.validation.NoHtml;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -16,6 +20,7 @@ public abstract class AbstractNamedEntity extends AbstractBaseEntity {
     @Column(name = "name", nullable = false)
     @Getter
     @Setter
+    @NoHtml  // https://stackoverflow.com/questions/17480809
     protected String name;
 
     protected AbstractNamedEntity(Integer id, String name) {

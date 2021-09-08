@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import ru.khalitovaae.restaurantvoting.HasId;
+import ru.khalitovaae.restaurantvoting.util.validation.NoHtml;
 
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -31,7 +32,7 @@ public class User extends AbstractNamedEntity implements HasId {
     @NotBlank
     @Size(max = 100)
     @Getter
-//    @NoHtml(groups = {View.Web.class})  // https://stackoverflow.com/questions/17480809
+    @NoHtml  // https://stackoverflow.com/questions/17480809
     private String email;
 
     @Column(name = "password", nullable = false)

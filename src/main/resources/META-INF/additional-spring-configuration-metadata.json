@@ -9,5 +9,15 @@
       "name": "spring.datasource.port",
       "type": "java.lang.String",
       "description": "Port to connect to H2 embedded DB."
+    },
+    {
+      "name": "vote.before-deadline",
+      "type": "java.time.LocalTime",
+      "description": "Time before deadline for tests."
+    },
+    {
+      "name": "vote.after-deadline",
+      "type": "java.time.LocalTime",
+      "description": "Time after deadline for tests."
     }
   ] }
