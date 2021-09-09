@@ -29,6 +29,19 @@ P.P.S.: Assume that your API will be used by a frontend developer to build front
 **Documentation** 
 http://localhost:8080/swagger-ui.html
 
+Default users (id, name, email, password, roles):
+
+1, User, user@yandex.ru, password, [USER]
+
+2, Admin, admin@gmail.com, admin, [USER, ADMIN]
+
+3, AdminOnly, admin_only@gmail.com, admin, [ADMIN]
+
+* User with only ADMIN role can't vote for restaurants.
+* Information about restaurants, menus and voting results is available for both authenticated and anonymous users (i.e GET requests in /restaurants).
+* User can create vote after deadline, but change/delete are prohibited.
+* If a restaurant didn't provide menu for today, users can't vote for this restaurant.
+
 ### Restaurant Controller
 
 #### GET all restaurants without menus
@@ -78,7 +91,10 @@ http://localhost:8080/swagger-ui.html
 #### DELETE menu for today (only if there are no votes)
 `curl -X 'DELETE' 'http://localhost:8080/restaurants/5/menus' --user 'admin_only@gmail.com:admin' --header 'accept: application/json'`
 
-###Vote Controller
+#### DELETE particular dish in today's menu (only if there are no votes)
+`curl -X 'DELETE' 'http://localhost:8080/restaurants/5/menus?dish=12' --user 'admin_only@gmail.com:admin' --header 'accept: application/json'`
+
+### Vote Controller
 
 #### POST a vote for restaurant
 `curl -X 'POST' 'http://localhost:8080/votes?restaurant=4' --user 'user@yandex.ru:password' --header 'accept: application/json'`
@@ -91,4 +107,8 @@ http://localhost:8080/swagger-ui.html
 
 #### DELETE vote by id
 `curl -X 'DELETE' 'http://localhost:8080/votes/21' --user 'user@yandex.ru:password' --header 'accept: application/json'`
+
+#### PUT change the vote
+`curl -X 'PUT' 'http://localhost:8080/votes/20?restaurant=4' --user 'admin@gmail.com:admin' --header 'accept: application/json'`
+
 

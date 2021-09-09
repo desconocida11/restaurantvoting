@@ -128,10 +128,14 @@ public class RestaurantController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id}" + MENU_URL)
-    public void deleteTodayMenu(@PathVariable int id) {
+    public void deleteTodayMenu(@PathVariable int id, @RequestParam(required = false) Integer dish) {
         LocalDate day = LocalDate.now();
         checkUpdateMenu(id, day);
-        dishService.deleteByRestaurantIdAndDate(id, day);
+        if (dish == null) {
+            dishService.deleteByRestaurantIdAndDate(id, day);
+        } else {
+            dishService.deleteByIdAndRestaurantId(dish, id);
+        }
     }
 
 //    CHECK defaultValue = "#{T(java.time.LocalDate).now()}" SpEL TODO

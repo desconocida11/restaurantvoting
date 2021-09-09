@@ -6,15 +6,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.khalitovaae.restaurantvoting.web.testdata.DishTestData;
-import ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData;
 import ru.khalitovaae.restaurantvoting.model.Restaurant;
 import ru.khalitovaae.restaurantvoting.repository.DishRepository;
 import ru.khalitovaae.restaurantvoting.repository.RestaurantRepository;
 import ru.khalitovaae.restaurantvoting.to.Menu;
 import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.json.JsonUtil;
+import ru.khalitovaae.restaurantvoting.web.testdata.DishTestData;
 import ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData;
+import ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData;
 
 import java.util.List;
 
@@ -23,11 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData.VOTE_RESULT_MATCHER;
 import static ru.khalitovaae.restaurantvoting.web.testdata.DishTestData.*;
 import static ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData.*;
 import static ru.khalitovaae.restaurantvoting.web.testdata.UserTestData.ADMIN_MAIL;
 import static ru.khalitovaae.restaurantvoting.web.testdata.UserTestData.USER_MAIL;
+import static ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData.VOTE_RESULT_MATCHER;
 
 class RestaurantControllerTest extends AbstractControllerTest {
 
@@ -213,6 +213,17 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         assertTrue(dishRepository.findAllById(getMenuPushkin()).isEmpty());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void deleteDishFromMenu() throws Exception {
+        int dishId = pushkinDish1.getId();
+        String urlTemplate = RestaurantController.URL + SLASH + PUSHKIN_ID + RestaurantController.MENU_URL + "?dish=" + dishId;
+        perform(MockMvcRequestBuilders.delete(urlTemplate)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        assertTrue(dishRepository.findById(dishId).isEmpty());
     }
 
     @Test

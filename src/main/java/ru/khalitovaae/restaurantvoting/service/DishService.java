@@ -6,13 +6,13 @@ import ru.khalitovaae.restaurantvoting.model.Dish;
 import ru.khalitovaae.restaurantvoting.model.Restaurant;
 import ru.khalitovaae.restaurantvoting.repository.DishRepository;
 import ru.khalitovaae.restaurantvoting.repository.RestaurantRepository;
-import ru.khalitovaae.restaurantvoting.to.DishTo;
 import ru.khalitovaae.restaurantvoting.to.Menu;
-import ru.khalitovaae.restaurantvoting.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.notFound;
 
 @Service
 public class DishService {
@@ -50,32 +50,21 @@ public class DishService {
     }
 
     public void delete(int id) {
-        if (repository.delete(id) != 1) {
-            throw new NotFoundException("Dish with id=" + id + " not found");
-        }
+        notFound(repository.delete(id) != 1, "Dish with id=" + id + " not found");
+    }
+
+    public void deleteByIdAndRestaurantId(int id, int restaurant) {
+        notFound(repository.deleteByIdAndRestaurantId(id, restaurant) != 1, "Dish with id=" + id + " not found in restaurant id=" + restaurant);
     }
 
     public void deleteByRestaurantIdAndDate(int id, LocalDate day) {
-        if (repository.deleteAllByRestaurantIdAndDay(id, day) < 1) {
-            throw new NotFoundException("Dishes for restaurant id=" + id + " and day=" + day + " not found");
-        }
+        notFound(repository.deleteAllByRestaurantIdAndDay(id, day) < 1, "Dishes for restaurant id=" + id + " and day=" + day + " not found");
     }
 
     public Dish get(int id) {
         Dish dish = repository.findById(id).orElse(null);
-        if (dish == null) {
-            throw new NotFoundException("Dish with id=" + id + " not found");
-        }
+        notFound(dish == null, "Dish with id=" + id + " not found");
         return dish;
-    }
-
-    public List<Dish> getByRestaurantId(int restaurantId) {
-        return repository.findAllByRestaurantId(restaurantId);
-    }
-
-    public List<Dish> getByDate(LocalDate date) {
-        Assert.notNull(date, "date must not be null");
-        return repository.findAllByDay(date);
     }
 
     public void update(Dish dish) {

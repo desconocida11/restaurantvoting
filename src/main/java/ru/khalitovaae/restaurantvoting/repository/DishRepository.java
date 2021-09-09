@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.khalitovaae.restaurantvoting.model.Dish;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
@@ -25,7 +24,8 @@ public interface DishRepository extends JpaRepository<Dish, Integer> {
     @Query("DELETE FROM Dish d WHERE d.restaurant.id=:id AND d.day=:day")
     int deleteAllByRestaurantIdAndDay(@Param("id") int id, @Param("day") LocalDate day);
 
-    List<Dish> findAllByDay(LocalDate date);
-
-    List<Dish> findAllByRestaurantId(int restaurantId);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Dish d WHERE d.id=:id AND d.restaurant.id=:restaurantId")
+    int deleteByIdAndRestaurantId(@Param("id") int id, @Param("restaurantId") int restaurantId);
 }

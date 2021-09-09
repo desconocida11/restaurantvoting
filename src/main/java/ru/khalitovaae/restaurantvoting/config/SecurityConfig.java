@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.khalitovaae.restaurantvoting.model.Role;
 import ru.khalitovaae.restaurantvoting.service.UserService;
 
 import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
@@ -16,9 +17,6 @@ import static org.springframework.security.crypto.factory.PasswordEncoderFactori
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private static final String ROLE_ADMIN = "ADMIN";
-    private static final String ROLE_USER = "USER";
 
     private final String[] swaggerPatterns = {"/swagger-ui.html", "/swagger-ui/**",
             "/swagger-resources/**", "/v3/api-docs/**"};
@@ -47,16 +45,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/profile/register").anonymous()
                 .antMatchers("/login").anonymous()
-                .antMatchers("/admin", "/admin/**").hasRole(ROLE_ADMIN)
-                .antMatchers("/profile").hasRole(ROLE_USER)
+                .antMatchers("/admin", "/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/profile").hasRole(Role.USER.name())
                 .antMatchers(HttpMethod.GET, "/restaurants/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/restaurants/**").hasRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.POST, "/restaurants/**").hasRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/restaurants/**").hasRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/restaurants/**").hasRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/votes/**").hasRole(ROLE_USER)
-                .antMatchers(HttpMethod.POST, "/votes/**").hasRole(ROLE_USER)
-                .antMatchers(HttpMethod.DELETE, "/votes/**").hasRole(ROLE_USER)
+                .antMatchers(HttpMethod.DELETE, "/restaurants/**").hasRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/restaurants/**").hasRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.DELETE, "/restaurants/**").hasRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.PUT, "/restaurants/**").hasRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.PUT, "/votes/**").hasRole(Role.USER.name())
+                .antMatchers(HttpMethod.POST, "/votes/**").hasRole(Role.USER.name())
+                .antMatchers(HttpMethod.DELETE, "/votes/**").hasRole(Role.USER.name())
                 .antMatchers(swaggerPatterns).permitAll()
                 .antMatchers("/**").authenticated()
                 .and().httpBasic();
