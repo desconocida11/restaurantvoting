@@ -2,7 +2,6 @@ package ru.khalitovaae.restaurantvoting.web.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.khalitovaae.restaurantvoting.model.User;
 import ru.khalitovaae.restaurantvoting.service.UserService;
 
@@ -39,6 +38,11 @@ public abstract class AbstractUserController {
     protected User getWithVotes(int id) {
         log.info("get with votes {}", id);
         return service.getWithVotes(id);
+    }
+
+    protected List<User> getAllWithVotes() {
+        log.info("get all with votes");
+        return service.getAllWithVotes();
     }
 
     protected void update(User user, int id) {

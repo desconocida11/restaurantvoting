@@ -1,5 +1,8 @@
 [![Build Status](https://app.travis-ci.com/desconocida11/restaurantvoting.svg?branch=master)](https://app.travis-ci.com/desconocida11/restaurantvoting)
 ----
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/16936654-30fec1ca-b271-4607-bcdf-8db9356b06ae?action=collection%2Ffork&collection-url=entityId%3D16936654-30fec1ca-b271-4607-bcdf-8db9356b06ae%26entityType%3Dcollection%26workspaceId%3D1487bbd8-b874-42ee-ac00-07d6a2ac4235)
+----
+
 Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) **without frontend**.
 
 The task is:
@@ -111,4 +114,30 @@ Default users (id, name, email, password, roles):
 #### PUT change the vote
 `curl -X 'PUT' 'http://localhost:8080/votes/20?restaurant=4' --user 'admin@gmail.com:admin' --header 'accept: application/json'`
 
+### Admin Controller
 
+#### get All Users
+`curl -s http://localhost:8080/admin/users --user admin@gmail.com:admin`
+
+#### get All Users with votes
+`curl -s http://localhost:8080/admin/users/with-votes --user admin@gmail.com:admin`
+
+#### get User 1
+`curl -s http://localhost:8080/admin/users/1 --user admin@gmail.com:admin`
+
+#### get User 1 with votes
+`curl -s http://localhost:8080/admin/users/1/with-votes --user admin@gmail.com:admin`
+
+#### delete user
+`curl -L -X DELETE 'http://localhost:8080/admin/users/100001' --user admin@gmail.com:admin`
+
+### Profile Controller
+
+#### register Users
+`curl -s -i -X POST -d '{"name":"New User","email":"test@mail.ru","password":"test-password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/profile/register`
+
+#### get Profile
+`curl -s http://localhost:8080/profile --user user@yandex.ru:password`
+
+#### update profile
+`curl -L -X PUT 'http://localhost:8080/profile' --user user@yandex.ru:password -H 'Content-Type: application/json' --data-raw '{ "id": 1, "name": "User Updated", "email": "user@yandex.ru", "password": "password", "roles": ["USER"]}'`

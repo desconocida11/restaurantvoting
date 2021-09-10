@@ -27,9 +27,19 @@ public class AdminController extends AbstractUserController {
         return super.getAll();
     }
 
+    @GetMapping("/with-votes")
+    public List<User> getAllWithVotes() {
+        return super.getAllWithVotes();
+    }
+
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
         return super.get(id);
+    }
+
+    @GetMapping("/{id}/with-votes")
+    public User getWithVotes(@PathVariable int id) {
+        return super.getWithVotes(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

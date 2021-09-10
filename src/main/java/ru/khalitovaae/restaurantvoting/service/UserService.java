@@ -81,6 +81,10 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public List<User> getAllWithVotes() {
+        return repository.getAllWithVotes();
+    }
+
     @Override
     public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = repository.getByEmail(email.toLowerCase());
