@@ -13,6 +13,7 @@ import ru.khalitovaae.restaurantvoting.model.User;
 import ru.khalitovaae.restaurantvoting.repository.UserRepository;
 import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.AbstractControllerTest;
+import ru.khalitovaae.restaurantvoting.web.testdata.UserTestData;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,6 +27,8 @@ class AdminUserControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminController.URL + '/';
 
+    private static final String WITH_VOTES_URL = "/with-votes";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -38,6 +41,16 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 // https://jira.spring.io/browse/SPR-14472
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MATCHER.contentJson(admin));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getWithVotes() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + WITH_VOTES_URL))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(WITH_VOTES_MATCHER.contentJson(UserTestData.getWithVotes()));
     }
 
     @Test
