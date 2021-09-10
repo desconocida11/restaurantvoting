@@ -21,16 +21,12 @@ public class DishTo extends BaseTo {
     @Size(min = 2, max = 100)
     @Getter
     @Setter
-    protected String name;
+    private String name;
 
     public DishTo(Integer id, String name, long price) {
         super(id);
         this.name = name;
         this.price = price;
-    }
-
-    public DishTo(DishTo d) {
-        this(d.getId(), d.getName(), d.getPrice());
     }
 
     public DishTo(Dish dish) {

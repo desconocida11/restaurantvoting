@@ -2,9 +2,7 @@ package ru.khalitovaae.restaurantvoting.to;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.khalitovaae.restaurantvoting.model.Restaurant;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
