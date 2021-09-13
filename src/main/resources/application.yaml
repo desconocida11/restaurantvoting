@@ -36,11 +36,10 @@ spring:
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
-    cache-names: users, restaurants
-
   #  https://stackoverflow.com/a/49073342
     jcache:
-      config: ehcache.xml
+      provider: org.ehcache.jsr107.EhcacheCachingProvider
+      config: classpath:ehcache.xml
 
   sql:
     init:

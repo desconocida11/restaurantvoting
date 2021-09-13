@@ -5,11 +5,15 @@
     <!--http://www.ehcache.org/documentation/3.8/xml.html-->
     <!--http://www.ehcache.org/documentation/3.8/107.html#supplement-jsr-107-configurations-->
 
+<!--    <service>-->
+<!--        <jsr107:defaults enable-management="true" enable-statistics="true"/>-->
+<!--    </service>-->
+
     <cache-template name="expiryCache">
         <expiry>
-            <ttl unit="minutes">5</ttl>
+            <ttl unit="hours">12</ttl>
         </expiry>
-        <heap>5000</heap>
+        <heap>100</heap>
     </cache-template>
 
     <cache-template name="singleNonExpiryCache">
@@ -19,6 +23,15 @@
         <heap>1</heap>
     </cache-template>
 
-    <cache alias="users" uses-template="singleNonExpiryCache"/>
-    <cache alias="restaurants" uses-template="singleNonExpiryCache"/>
+    <cache alias="restaurants" uses-template="expiryCache">
+        <listeners>
+            <listener>
+                <class>ru.khalitovaae.restaurantvoting.config.CacheEventLogger</class>
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+            </listener>
+        </listeners>
+    </cache>
 </config>

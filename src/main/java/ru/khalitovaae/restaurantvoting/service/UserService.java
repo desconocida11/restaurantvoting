@@ -1,7 +1,5 @@
 package ru.khalitovaae.restaurantvoting.service;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,13 +30,11 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         return prepareAndSave(user);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         notFoundWithId(repository.delete(id) != 1, "Not found entity with id=", id);
     }
@@ -56,12 +52,10 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    @Cacheable("users")
     public List<User> getAll() {
         return repository.findAll(UserRepository.SORT_NAME_EMAIL);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
@@ -69,7 +63,6 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     public void enable(int id, boolean enabled) {
         User user = get(id);
         user.setEnabled(enabled);

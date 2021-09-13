@@ -19,13 +19,12 @@ import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.notFoundWithId
 public class RestaurantService {
     private final RestaurantRepository repository;
 
-    @CacheEvict(value = "restaurants", allEntries = true)
     public Restaurant create(Restaurant restaurant) {
         Assert.notNull(restaurant, "restaurant must not be null");
         return repository.save(restaurant);
     }
 
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @CacheEvict(value = "restaurants", key = "#id")
     public void delete(int id) {
         notFoundWithId(repository.delete(id) != 1, "Not found restaurant with id=", id);
     }
@@ -43,7 +42,6 @@ public class RestaurantService {
         return restaurant;
     }
 
-    @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         return repository.findAll(repository.SORT_NAME);
     }
@@ -54,13 +52,14 @@ public class RestaurantService {
         return restaurants;
     }
 
+    @Cacheable(value = "restaurants", key = "#id", condition = "#date eq T(java.time.LocalDate).now()")
     public Restaurant getByIdWithDishesForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.getByIdWithDishes(id, date);
         notFound(restaurant == null || restaurant.getDishes() == null, "Restaurant id=" + id + " doesn't exist or didn't provide menu for " + date);
         return restaurant;
     }
 
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @CacheEvict(value = "restaurants", key = "#restaurant.id()")
     public void update(Restaurant restaurant) {
         Assert.notNull(restaurant, "restaurant must not be null");
         repository.save(restaurant);

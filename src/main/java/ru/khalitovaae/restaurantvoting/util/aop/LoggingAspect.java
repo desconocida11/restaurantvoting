@@ -12,6 +12,7 @@ import ru.khalitovaae.restaurantvoting.util.SecurityUtil;
 import ru.khalitovaae.restaurantvoting.web.RestaurantController;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Component
 @Aspect
@@ -24,7 +25,15 @@ public class LoggingAspect {
         log.info("method: {}", signature.getName());
         AuthorizedUser authUser = SecurityUtil.safeGet();
         log.info("auth user: {}", authUser != null ? authUser.getId() : "anonymous");
-        Arrays.stream(signature.getParameterNames()).forEach(s -> log.info("arg name: {}", s));
-        Arrays.stream(joinPoint.getArgs()).forEach(o -> log.info("arg value: {}", o));
+        if (signature.getParameterNames().length > 0) {
+            String args = String.join(", ", signature.getParameterNames());
+            log.info("args names: {}", args);
+        }
+        if (joinPoint.getArgs().length > 0) {
+            String values = Arrays.stream(joinPoint.getArgs())
+                    .map(o -> o == null ? "null" : o.toString())
+                    .collect(Collectors.joining(", "));
+            log.info("values names: {}", values);
+        }
     }
 }

@@ -28,8 +28,10 @@ P.S.: Make sure everything works with the latest version that is on GitHub :)
 P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
 
 -----------------------------
+**Tech Stack:**
+Java 16, Spring Boot, Spring Data JPA, Spring Security, Spring Test, EhCache, Hibernate, JUnit, Maven, Lombok, H2DB
 
-**Documentation** 
+**Documentation:** 
 http://localhost:8080/swagger-ui.html
 
 Default users (id, name, email, password, roles):

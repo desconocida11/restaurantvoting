@@ -1,5 +1,6 @@
 package ru.khalitovaae.restaurantvoting.service;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.khalitovaae.restaurantvoting.model.Dish;
@@ -24,11 +25,13 @@ public class DishService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @CacheEvict(value = "restaurants", key = "#dish.restaurant.id()")
     public Dish create(Dish dish) {
         Assert.notNull(dish, "dish must not be null");
         return repository.save(dish);
     }
 
+    @CacheEvict(value = "restaurants", key = "#restaurantId")
     public List<Dish> createFromMenu(Menu menu, int restaurantId) {
         Assert.notNull(menu, "menu must not be null");
         Restaurant restaurant = restaurantRepository.getById(restaurantId);
@@ -39,6 +42,7 @@ public class DishService {
         return repository.saveAll(dishList);
     }
 
+    @CacheEvict(value = "restaurants", key = "#restaurant.id()")
     public List<Dish> updateFromMenu(Menu menu, Restaurant restaurant) {
         Assert.notNull(menu, "menu must not be null");
         Assert.notNull(restaurant, "restaurant must not be null");
@@ -49,14 +53,12 @@ public class DishService {
         return repository.saveAll(dishList);
     }
 
-    public void delete(int id) {
-        notFound(repository.delete(id) != 1, "Dish with id=" + id + " not found");
-    }
-
+    @CacheEvict(value = "restaurants", key = "#restaurant")
     public void deleteByIdAndRestaurantId(int id, int restaurant) {
         notFound(repository.deleteByIdAndRestaurantId(id, restaurant) != 1, "Dish with id=" + id + " not found in restaurant id=" + restaurant);
     }
 
+    @CacheEvict(value = "restaurants", key = "#id")
     public void deleteByRestaurantIdAndDate(int id, LocalDate day) {
         notFound(repository.deleteAllByRestaurantIdAndDay(id, day) < 1, "Dishes for restaurant id=" + id + " and day=" + day + " not found");
     }
@@ -67,6 +69,7 @@ public class DishService {
         return dish;
     }
 
+    @CacheEvict(value = "restaurants", key = "#dish.restaurant.id()")
     public void update(Dish dish) {
         Assert.notNull(dish, "dish must not be null");
         repository.save(dish);
