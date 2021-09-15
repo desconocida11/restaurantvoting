@@ -3,6 +3,11 @@ spring:
     type: none
   datasource:
     port: "8043"
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: false
 
 vote:
   deadline: "11:00:00"

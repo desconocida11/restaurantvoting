@@ -20,4 +20,5 @@
       "type": "java.time.LocalTime",
       "description": "Time after deadline for tests."
     }
-  ] }
+  ]
+}
