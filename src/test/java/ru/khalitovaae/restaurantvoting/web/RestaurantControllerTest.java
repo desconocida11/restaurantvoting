@@ -16,6 +16,7 @@ import ru.khalitovaae.restaurantvoting.web.testdata.DishTestData;
 import ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData;
 import ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -40,7 +41,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     void getAllMenusForDate() throws Exception {
         setDishes();
-        perform(MockMvcRequestBuilders.get(RestaurantController.URL + RestaurantController.MENU_URL))
+        perform(MockMvcRequestBuilders.get(MenuController.URL))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -51,7 +52,6 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$[1].dishes", hasSize(3)))
                 .andExpect(jsonPath("$[2].name").value("Pushkin"))
                 .andExpect(jsonPath("$[2].dishes", hasSize(5)));
-        // TODO Matcher
     }
 
     @Test
@@ -93,11 +93,20 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     void getMenuForDate() throws Exception {
-        perform(MockMvcRequestBuilders.get(RestaurantController.URL + SLASH + METROPOL_ID + SLASH + RestaurantController.MENU_URL))
+        perform(MockMvcRequestBuilders.get(MenuController.URL + "?restaurant=" + METROPOL_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_DISHES_MATCHER.contentJson(getMenuForToday()));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name").value(getMenuForToday().getName()))
+                .andExpect(jsonPath("$[0].dishes", hasSize(2)))
+                .andExpect(jsonPath("$[0].dishes[0].name").value(getMenuForToday().getDishes().get(0).getName()))
+                .andExpect(jsonPath("$[0].dishes[0].price").value(getMenuForToday().getDishes().get(0).getPrice()))
+                .andExpect(jsonPath("$[0].dishes[0].day").value(getMenuForToday().getDishes().get(0).getDay().format(DateTimeFormatter.ISO_DATE)))
+                .andExpect(jsonPath("$[0].dishes[1].name").value(getMenuForToday().getDishes().get(1).getName()))
+                .andExpect(jsonPath("$[0].dishes[1].price").value(getMenuForToday().getDishes().get(1).getPrice()))
+                .andExpect(jsonPath("$[0].dishes[1].day").value(getMenuForToday().getDishes().get(1).getDay().format(DateTimeFormatter.ISO_DATE)));
+
     }
 
     @Test
@@ -165,11 +174,11 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void createTodayMenu() throws Exception {
         Menu menu = createNewMenu();
-        final String urlTemplate = RestaurantController.URL + SLASH + DUMMY_ID + RestaurantController.MENU_URL;
+        final String urlTemplate = MenuController.URL + "?restaurant=" + DUMMY_ID;
         ResultActions action = perform(
                 MockMvcRequestBuilders.post(urlTemplate)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(menu)));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.writeValue(menu)));
         action.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(getDishesForMenu()));
     }
@@ -178,11 +187,11 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void createTodayMenuUnauthorized() throws Exception {
         Menu menu = createNewMenu();
-        final String urlTemplate = RestaurantController.URL + SLASH + DUMMY_ID + RestaurantController.MENU_URL;
+        final String urlTemplate = MenuController.URL + "?restaurant=" + DUMMY_ID;
         perform(MockMvcRequestBuilders.post(urlTemplate)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(menu)))
-                        .andExpect(status().isForbidden());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(menu)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -199,7 +208,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void updateTodayMenu() throws Exception {
         Menu menu = DishTestData.getUpdatedMenu();
-        perform(MockMvcRequestBuilders.put(RestaurantController.URL + SLASH + METROPOL_ID + RestaurantController.MENU_URL)
+        perform(MockMvcRequestBuilders.put(MenuController.URL + "?restaurant=" + METROPOL_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menu)))
                 .andExpect(status().isCreated());
@@ -209,7 +218,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void deleteTodayMenu() throws Exception {
-        perform(MockMvcRequestBuilders.delete(RestaurantController.URL + SLASH + PUSHKIN_ID + RestaurantController.MENU_URL)
+        perform(MockMvcRequestBuilders.delete(MenuController.URL + "?restaurant=" + PUSHKIN_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         assertTrue(dishRepository.findAllById(getMenuPushkin()).isEmpty());
@@ -219,7 +228,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void deleteDishFromMenu() throws Exception {
         int dishId = pushkinDish1.getId();
-        String urlTemplate = RestaurantController.URL + SLASH + PUSHKIN_ID + RestaurantController.MENU_URL + "?dish=" + dishId;
+        String urlTemplate = MenuController.URL + "?restaurant=" + PUSHKIN_ID + "&dish=" + dishId;
         perform(MockMvcRequestBuilders.delete(urlTemplate)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -229,7 +238,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void deleteTodayMenuWithVotes() throws Exception {
-        perform(MockMvcRequestBuilders.delete(RestaurantController.URL + SLASH + METROPOL_ID + RestaurantController.MENU_URL)
+        perform(MockMvcRequestBuilders.delete(MenuController.URL + "?restaurant=" + METROPOL_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR));
