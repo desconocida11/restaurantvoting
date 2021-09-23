@@ -2,31 +2,17 @@
         xmlns='http://www.ehcache.org/v3'
         xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
 
-    <!--http://www.ehcache.org/documentation/3.8/xml.html-->
-    <!--http://www.ehcache.org/documentation/3.8/107.html#supplement-jsr-107-configurations-->
-
-<!--    <service>-->
-<!--        <jsr107:defaults enable-management="true" enable-statistics="true"/>-->
-<!--    </service>-->
-
     <cache-template name="expiryCache">
         <expiry>
-            <ttl unit="hours">12</ttl>
+            <class>ru.khalitovaae.restaurantvoting.config.cache.EvictAtMidnightCache</class>
         </expiry>
         <heap>100</heap>
-    </cache-template>
-
-    <cache-template name="singleNonExpiryCache">
-        <expiry>
-            <none/>
-        </expiry>
-        <heap>1</heap>
     </cache-template>
 
     <cache alias="restaurants" uses-template="expiryCache">
         <listeners>
             <listener>
-                <class>ru.khalitovaae.restaurantvoting.config.CacheEventLogger</class>
+                <class>ru.khalitovaae.restaurantvoting.config.cache.CacheEventLogger</class>
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
                 <event-ordering-mode>UNORDERED</event-ordering-mode>
                 <events-to-fire-on>CREATED</events-to-fire-on>

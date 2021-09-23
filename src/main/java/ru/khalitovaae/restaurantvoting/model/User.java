@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +26,7 @@ import java.util.*;
 @Entity
 @Table(name = "users", uniqueConstraints =
         {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
+@ToString(callSuper = true)
 public class User extends AbstractNamedEntity implements HasId {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -42,6 +44,7 @@ public class User extends AbstractNamedEntity implements HasId {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Getter
     @Setter
+    @ToString.Exclude
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
@@ -54,6 +57,7 @@ public class User extends AbstractNamedEntity implements HasId {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Getter
     @Setter
+    @ToString.Exclude
     private Date registered = new Date();
 
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -65,6 +69,7 @@ public class User extends AbstractNamedEntity implements HasId {
     @BatchSize(size = 200)
     @JoinColumn(name = "user_id") //https://stackoverflow.com/a/62848296/548473
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @ToString.Exclude
     private Set<Role> roles;
 
 
@@ -74,11 +79,13 @@ public class User extends AbstractNamedEntity implements HasId {
     @Getter
     @Setter
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @ToString.Exclude
     private List<Vote> votes;
 
     public User() {
     }
 
+    @SuppressWarnings("CopyConstructorMissesField")
     public User(User u) {
         this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.isEnabled(), u.getRegistered(), u.getRoles());
     }
@@ -106,16 +113,5 @@ public class User extends AbstractNamedEntity implements HasId {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email=" + email +
-                ", name=" + name +
-                ", enabled=" + enabled +
-                ", roles=" + roles +
-                '}';
     }
 }

@@ -24,13 +24,6 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
 
     List<Vote> getAllByUserIdOrderByDayDesc(int userId);
 
-    @Query("SELECT v from Vote v WHERE v.day = :day ORDER BY v.day DESC")
-    List<Vote> getBetweenHalfOpen(@Param("day") LocalDate day);
-
-    // votes for a particular date, sorted descending (date, restaurant name)
-    @Query("SELECT v FROM Vote v WHERE v.day =:day ORDER BY v.day, v.restaurant.name DESC")
-    List<Vote> getByDate(@Param("day") LocalDate day);
-
     @Query("SELECT v FROM Vote v WHERE v.day = :day AND v.user.id = :userId")
     Vote getByDateAndUserId(LocalDate day, int userId);
 

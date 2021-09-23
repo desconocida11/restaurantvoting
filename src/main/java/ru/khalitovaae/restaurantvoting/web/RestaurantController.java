@@ -12,7 +12,6 @@ import ru.khalitovaae.restaurantvoting.service.DishService;
 import ru.khalitovaae.restaurantvoting.service.RestaurantService;
 import ru.khalitovaae.restaurantvoting.service.VoteService;
 import ru.khalitovaae.restaurantvoting.to.Menu;
-import ru.khalitovaae.restaurantvoting.to.VoteResultTo;
 import ru.khalitovaae.restaurantvoting.util.exception.IllegalRequestDataException;
 
 import javax.validation.Valid;
@@ -20,7 +19,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.*;
+import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.assureIdConsistent;
+import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.checkNew;
 
 @RestController
 @RequestMapping(value = RestaurantController.URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,11 +52,6 @@ public class RestaurantController {
     @GetMapping
     public List<Restaurant> getAll() {
         return restaurantService.getAll();
-    }
-
-    @GetMapping(VOTES_URL)
-    public List<VoteResultTo> getVotingResults(@RequestParam(required = false) LocalDate date) {
-        return voteService.getVotingResults(getDay(date));
     }
 
     @GetMapping("/{id}")
@@ -104,26 +99,19 @@ public class RestaurantController {
     }
 
     @PostMapping(value = "/{id}" + MENU_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Dish>> createTodayMenu(@PathVariable int id, @Valid @RequestBody Menu menu) {
-        LocalDate day = LocalDate.now();
-        assureDayConsistent(menu, day);
+    public ResponseEntity<List<Dish>> createTodayMenu(@PathVariable int id, @RequestBody Menu menu) {
         List<Dish> created = dishService.createFromMenu(menu, id);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(URL + id + MENU_URL)
+                .path(URL + "/" + id + MENU_URL)
                 .build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/{id}" + MENU_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Dish>> updateTodayMenu(@PathVariable int id, @Valid @RequestBody Menu menu) {
-        LocalDate day = LocalDate.now();
-        assureDayConsistent(menu, day);
+    @PatchMapping(value = "/{id}" + MENU_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateTodayMenu(@PathVariable int id, @RequestBody Menu menu) {
         Restaurant restaurant = restaurantService.get(id);
-        List<Dish> updated = dishService.updateFromMenu(menu, restaurant);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(URL + id + MENU_URL)
-                .build().toUri();
-        return ResponseEntity.created(uriOfNewResource).body(updated);
+        dishService.updateFromMenu(menu, restaurant);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -138,7 +126,6 @@ public class RestaurantController {
         }
     }
 
-//    CHECK defaultValue = "#{T(java.time.LocalDate).now()}" SpEL TODO
     private LocalDate getDay(LocalDate date) {
         return date == null ? LocalDate.now() : date;
     }

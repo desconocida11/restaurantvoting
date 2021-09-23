@@ -1,26 +1,20 @@
 package ru.khalitovaae.restaurantvoting.to;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
 public class Menu {
 
-    @Getter
-    @Setter
-    private LocalDate day;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDate day = LocalDate.now();
 
-    @Getter
-    @Setter
     private List<DishTo> dishes;
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "day=" + day +
-                ", dishes=" + dishes +
-                '}';
-    }
 }

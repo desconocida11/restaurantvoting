@@ -25,12 +25,6 @@ public class DishService {
         this.restaurantRepository = restaurantRepository;
     }
 
-    @CacheEvict(value = "restaurants", key = "#dish.restaurant.id()")
-    public Dish create(Dish dish) {
-        Assert.notNull(dish, "dish must not be null");
-        return repository.save(dish);
-    }
-
     @CacheEvict(value = "restaurants", key = "#restaurantId")
     public List<Dish> createFromMenu(Menu menu, int restaurantId) {
         Assert.notNull(menu, "menu must not be null");
@@ -43,14 +37,14 @@ public class DishService {
     }
 
     @CacheEvict(value = "restaurants", key = "#restaurant.id()")
-    public List<Dish> updateFromMenu(Menu menu, Restaurant restaurant) {
+    public void updateFromMenu(Menu menu, Restaurant restaurant) {
         Assert.notNull(menu, "menu must not be null");
         Assert.notNull(restaurant, "restaurant must not be null");
         List<Dish> dishList = menu.getDishes()
                 .stream()
                 .map(dishTo -> new Dish(dishTo.id(), dishTo.getName(), menu.getDay(), dishTo.getPrice(), restaurant))
                 .collect(Collectors.toList());
-        return repository.saveAll(dishList);
+        repository.saveAll(dishList);
     }
 
     @CacheEvict(value = "restaurants", key = "#restaurant")
@@ -61,17 +55,5 @@ public class DishService {
     @CacheEvict(value = "restaurants", key = "#id")
     public void deleteByRestaurantIdAndDate(int id, LocalDate day) {
         notFound(repository.deleteAllByRestaurantIdAndDay(id, day) < 1, "Dishes for restaurant id=" + id + " and day=" + day + " not found");
-    }
-
-    public Dish get(int id) {
-        Dish dish = repository.findById(id).orElse(null);
-        notFound(dish == null, "Dish with id=" + id + " not found");
-        return dish;
-    }
-
-    @CacheEvict(value = "restaurants", key = "#dish.restaurant.id()")
-    public void update(Dish dish) {
-        Assert.notNull(dish, "dish must not be null");
-        repository.save(dish);
     }
 }

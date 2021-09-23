@@ -1,4 +1,4 @@
-package ru.khalitovaae.restaurantvoting.config;
+package ru.khalitovaae.restaurantvoting.config.cache;
 
 import org.ehcache.event.CacheEvent;
 import org.ehcache.event.CacheEventListener;

@@ -14,7 +14,6 @@ import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.json.JsonUtil;
 import ru.khalitovaae.restaurantvoting.web.testdata.DishTestData;
 import ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData;
-import ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData;
 
 import java.util.List;
 
@@ -27,7 +26,6 @@ import static ru.khalitovaae.restaurantvoting.web.testdata.DishTestData.*;
 import static ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData.*;
 import static ru.khalitovaae.restaurantvoting.web.testdata.UserTestData.ADMIN_MAIL;
 import static ru.khalitovaae.restaurantvoting.web.testdata.UserTestData.USER_MAIL;
-import static ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData.VOTE_RESULT_MATCHER;
 
 class RestaurantControllerTest extends AbstractControllerTest {
 
@@ -61,15 +59,6 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MATCHER.contentJson(getAllSorted()));
-    }
-
-    @Test
-    void getVotingResults() throws Exception {
-        perform(MockMvcRequestBuilders.get(RestaurantController.URL + RestaurantController.VOTES_URL))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_RESULT_MATCHER.contentJson(VotesTestData.getVotingResults()));
     }
 
     @Test
@@ -199,10 +188,10 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void updateTodayMenu() throws Exception {
         Menu menu = DishTestData.getUpdatedMenu();
-        perform(MockMvcRequestBuilders.put(RestaurantController.URL + SLASH + METROPOL_ID + RestaurantController.MENU_URL)
+        perform(MockMvcRequestBuilders.patch(RestaurantController.URL + SLASH + METROPOL_ID + RestaurantController.MENU_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menu)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isNoContent());
         DISH_MATCHER.assertMatch(dishRepository.findAllById(List.of(14, 15, 16)), getUpdatedDishes());
     }
 

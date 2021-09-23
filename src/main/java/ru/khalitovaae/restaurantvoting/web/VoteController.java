@@ -54,6 +54,11 @@ public class VoteController {
         return service.get(id, userId);
     }
 
+    @GetMapping("/today")
+    public Vote getTodayVote() {
+        return service.getTodayVote(authUserId());
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
@@ -74,7 +79,7 @@ public class VoteController {
     public ResponseEntity<Vote> createWithLocation(@RequestParam int restaurant) {
         Restaurant getRestaurant = restaurantService.getByIdWithDishesForDate(restaurant, LocalDate.now(clock));
         Vote vote = new Vote(null, SecurityUtil.get().getUser(), getRestaurant, LocalDate.now(clock), LocalTime.now(clock));
-        Vote created = service.create(vote, authUserId());
+        Vote created = service.create(vote);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

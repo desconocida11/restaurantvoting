@@ -2,6 +2,7 @@ package ru.khalitovaae.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -12,12 +13,14 @@ import java.util.List;
 @Table(name = "restaurants")
 @NoArgsConstructor
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@ToString(callSuper = true)
 public class Restaurant extends AbstractNamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("day DESC")
     @JsonManagedReference
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @ToString.Exclude
     private List<Dish> dishes;
 
     @SuppressWarnings("CopyConstructorMissesField")
@@ -35,12 +38,5 @@ public class Restaurant extends AbstractNamedEntity {
 
     public void setDishes(List<Dish> dishes) {
         this.dishes = dishes;
-    }
-
-    @Override
-    public String toString() {
-        return "Restaurant{" +
-                "name='" + name + '\'' +
-                '}';
     }
 }

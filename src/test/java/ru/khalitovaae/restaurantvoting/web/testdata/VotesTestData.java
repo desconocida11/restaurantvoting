@@ -2,7 +2,6 @@ package ru.khalitovaae.restaurantvoting.web.testdata;
 
 import lombok.experimental.UtilityClass;
 import ru.khalitovaae.restaurantvoting.model.Vote;
-import ru.khalitovaae.restaurantvoting.to.VoteResultTo;
 import ru.khalitovaae.restaurantvoting.web.MatcherFactory;
 
 import java.time.Clock;
@@ -24,18 +23,11 @@ public class VotesTestData {
             MatcherFactory.usingIgnoringFieldsComparator(Vote.class,
                     "user", "restaurant.dishes", "time");
 
-    public static MatcherFactory.Matcher<VoteResultTo> VOTE_RESULT_MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator(VoteResultTo.class, "restaurant.dishes");
-
     public static final int VOTE_ID_TODAY = 20;
 
     public static final Vote vote_today = new Vote(VOTE_ID_TODAY, UserTestData.admin, metropol, LocalDate.now(), LocalTime.of(0, 10, 0));
     public static final Vote vote_prev_user = new Vote(21, UserTestData.user, pushkin, LocalDate.of(2021, 8, 20), LocalTime.of(9,0,0));
     public static final Vote vote_prev_admin = new Vote(22, UserTestData.admin, metropol, LocalDate.of(2021, 8, 20), LocalTime.of(10,0, 0));
-
-    public static List<VoteResultTo> getVotingResults() {
-        return List.of(new VoteResultTo(metropol, 1L));
-    }
 
     public static List<Vote> getAllVotesAdmin() {
         return List.of(vote_today, vote_prev_admin);

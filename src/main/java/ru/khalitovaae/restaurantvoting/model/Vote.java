@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,26 +15,24 @@ import java.time.LocalTime;
 @Table(name = "votes", uniqueConstraints =
         {@UniqueConstraint(columnNames = {"day", "user_id"}, name = "vote_per_day_idx")})
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class Vote extends AbstractBaseEntity {
 
     @Column(name = "day", nullable = false)
     @NotNull
-    @Getter
-    @Setter
     private LocalDate day;
 
     @Column(name = "time", nullable = false)
     @NotNull
-    @Getter
-    @Setter
     private LocalTime time;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
-    @Getter
-    @Setter
     @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -53,13 +52,5 @@ public class Vote extends AbstractBaseEntity {
 
     public Vote(Integer id, User user, Restaurant restaurant) {
         this(id, user, restaurant, LocalDate.now(), LocalTime.now());
-    }
-
-    @Override
-    public String toString() {
-        return "Vote{" +
-                "id=" + id +
-                ", restaurant=" + restaurant.getName() +
-                '}';
     }
 }

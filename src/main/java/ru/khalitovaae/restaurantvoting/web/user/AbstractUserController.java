@@ -40,11 +40,6 @@ public abstract class AbstractUserController {
         return service.getWithVotes(id);
     }
 
-    protected List<User> getAllWithVotes() {
-        log.info("get all with votes");
-        return service.getAllWithVotes();
-    }
-
     protected void update(User user, int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);

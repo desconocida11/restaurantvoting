@@ -5,14 +5,12 @@ import org.slf4j.Logger;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 import ru.khalitovaae.restaurantvoting.HasId;
-import ru.khalitovaae.restaurantvoting.to.Menu;
 import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.util.exception.IllegalRequestDataException;
 import ru.khalitovaae.restaurantvoting.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
-import java.time.LocalDate;
 import java.util.Set;
 
 @UtilityClass
@@ -64,14 +62,6 @@ public class ValidationUtil {
             bean.setId(id);
         } else if (bean.id() != id) {
             throw new IllegalRequestDataException(bean + " must be with id=" + id);
-        }
-    }
-
-    public static void assureDayConsistent(Menu menu, LocalDate day) {
-        if (menu.getDay() == null) {
-            menu.setDay(day);
-        } else if (!menu.getDay().equals(day)) {
-            throw new IllegalRequestDataException("You can create/update menu only for day=" + day);
         }
     }
 
