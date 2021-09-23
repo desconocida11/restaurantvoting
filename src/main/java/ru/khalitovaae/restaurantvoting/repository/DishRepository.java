@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 public interface DishRepository extends JpaRepository<Dish, Integer> {
 
+    boolean existsDishByIdAndRestaurantId(int id, int restaurantId);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Dish d WHERE d.id=:id")

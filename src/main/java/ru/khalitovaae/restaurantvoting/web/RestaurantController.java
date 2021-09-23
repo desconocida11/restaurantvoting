@@ -6,13 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.khalitovaae.restaurantvoting.model.Dish;
 import ru.khalitovaae.restaurantvoting.model.Restaurant;
-import ru.khalitovaae.restaurantvoting.service.DishService;
 import ru.khalitovaae.restaurantvoting.service.RestaurantService;
 import ru.khalitovaae.restaurantvoting.service.VoteService;
-import ru.khalitovaae.restaurantvoting.to.Menu;
-import ru.khalitovaae.restaurantvoting.util.exception.IllegalRequestDataException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -28,25 +24,15 @@ public class RestaurantController {
 
     static final String URL = "/restaurants";
 
-    static final String MENU_URL = "/menus";
-
     static final String VOTES_URL = "/votes";
 
     private final RestaurantService restaurantService;
 
-    private final DishService dishService;
-
     private final VoteService voteService;
 
-    public RestaurantController(RestaurantService restaurantService, DishService dishService, VoteService voteService) {
+    public RestaurantController(RestaurantService restaurantService, VoteService voteService) {
         this.restaurantService = restaurantService;
-        this.dishService = dishService;
         this.voteService = voteService;
-    }
-
-    @GetMapping(MENU_URL)
-    public List<Restaurant> getAllMenusForDate(@RequestParam(required = false) LocalDate date) {
-        return restaurantService.getAllWithDishesForDate(getDay(date));
     }
 
     @GetMapping
@@ -59,15 +45,9 @@ public class RestaurantController {
         return restaurantService.get(id);
     }
 
-    @GetMapping("/{id}" + VOTES_URL)
-    public long getVotes(@PathVariable int id, @RequestParam(required = false) LocalDate date) {
-        return voteService.getCountByRestaurantIdPerDay(id, getDay(date));
-    }
-
-    @GetMapping("/{id}" + MENU_URL)
-    public Restaurant getMenuForDate(@PathVariable int id,
-                                     @RequestParam(required = false) LocalDate date) {
-        return restaurantService.getByIdWithDishesForDate(id, getDay(date));
+    @GetMapping("/{id}" + VOTES_URL + "/{date}")
+    public long getVotes(@PathVariable int id, @PathVariable LocalDate date) {
+        return voteService.getCountByRestaurantIdPerDay(id, date);
     }
 
     @GetMapping("/search")
@@ -96,43 +76,5 @@ public class RestaurantController {
                 .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @PostMapping(value = "/{id}" + MENU_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Dish>> createTodayMenu(@PathVariable int id, @RequestBody Menu menu) {
-        List<Dish> created = dishService.createFromMenu(menu, id);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(URL + "/" + id + MENU_URL)
-                .build().toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @PatchMapping(value = "/{id}" + MENU_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateTodayMenu(@PathVariable int id, @RequestBody Menu menu) {
-        Restaurant restaurant = restaurantService.get(id);
-        dishService.updateFromMenu(menu, restaurant);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/{id}" + MENU_URL)
-    public void deleteTodayMenu(@PathVariable int id, @RequestParam(required = false) Integer dish) {
-        LocalDate day = LocalDate.now();
-        checkUpdateMenu(id, day);
-        if (dish == null) {
-            dishService.deleteByRestaurantIdAndDate(id, day);
-        } else {
-            dishService.deleteByIdAndRestaurantId(dish, id);
-        }
-    }
-
-    private LocalDate getDay(LocalDate date) {
-        return date == null ? LocalDate.now() : date;
-    }
-
-    private void checkUpdateMenu(int id, LocalDate day) {
-        if (voteService.getCountByRestaurantIdPerDay(id, day) > 0) {
-            throw new IllegalRequestDataException("You can't delete today's menu. Votes for the restaurant already exist");
-        }
     }
 }

@@ -12,7 +12,6 @@ import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 
 import java.time.*;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData.PUSHKIN_ID;
 import static ru.khalitovaae.restaurantvoting.web.testdata.UserTestData.ADMIN_MAIL;
@@ -33,16 +32,6 @@ class VoteControllerAfterDeadlineTest extends AbstractControllerTest {
         Clock fixedClockAfterDeadline() {
             return Clock.fixed(AFTER_DEADLINE.toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
         }
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void deleteAfterDeadline() throws Exception {
-        Clock.fixed(AFTER_DEADLINE.toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
-        perform(MockMvcRequestBuilders.delete(VoteController.URL + SLASH + VOTE_ID_TODAY))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(errorType(ErrorType.VALIDATION_ERROR));
     }
 
     @Test

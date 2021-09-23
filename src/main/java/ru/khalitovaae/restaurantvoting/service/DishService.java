@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.checkIllegalRequest;
 import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.notFound;
 
 @Service
@@ -40,8 +41,11 @@ public class DishService {
     public void updateFromMenu(Menu menu, Restaurant restaurant) {
         Assert.notNull(menu, "menu must not be null");
         Assert.notNull(restaurant, "restaurant must not be null");
+        final int restaurantId = restaurant.id();
         List<Dish> dishList = menu.getDishes()
                 .stream()
+                .peek(dishTo -> checkIllegalRequest(!repository.existsDishByIdAndRestaurantId(dishTo.id(), restaurantId),
+                        "Dish with id=" + dishTo.id() + " doesn't exist in restaurant " + restaurantId))
                 .map(dishTo -> new Dish(dishTo.id(), dishTo.getName(), menu.getDay(), dishTo.getPrice(), restaurant))
                 .collect(Collectors.toList());
         repository.saveAll(dishList);

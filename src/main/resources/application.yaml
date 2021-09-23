@@ -10,6 +10,9 @@ spring:
     properties:
       #  http://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#configurations
       hibernate:
+        javax.cache:
+#          https://stackoverflow.com/questions/56294726/spring-boot-2-0-hibernate-5-ehcache-3-with-jcache
+          missing_cache_strategy: create
         format_sql: true
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc

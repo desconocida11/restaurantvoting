@@ -62,7 +62,7 @@ public class DishTestData {
 
     public static Menu getUpdatedMenu() {
         Menu menu = new Menu();
-        List<DishTo> dishes = List.of(new DishTo(pizzaDish1), new DishTo(pizzaDish2), new DishTo(pizzaDish3));
+        List<DishTo> dishes = List.of(new DishTo(metropolDish1), new DishTo(metropolDish2));
         dishes.forEach(dishTo -> {
             dishTo.setName(dishTo.getName() + " updated");
             dishTo.setPrice(1000);
@@ -72,7 +72,7 @@ public class DishTestData {
     }
 
     public static List<Dish> getUpdatedDishes() {
-        List<Dish> dishes = List.of(new Dish(pizzaDish1), new Dish(pizzaDish2), new Dish(pizzaDish3));
+        List<Dish> dishes = List.of(new Dish(metropolDish1), new Dish(metropolDish2));
         dishes.forEach(dish -> {
             dish.setName(dish.getName() + " updated");
             dish.setPrice(1000);

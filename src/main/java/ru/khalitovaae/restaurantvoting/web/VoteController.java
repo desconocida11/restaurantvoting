@@ -21,7 +21,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static ru.khalitovaae.restaurantvoting.util.SecurityUtil.authUserId;
-import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.assureIdConsistent;
 
 @RestController
 @RequestMapping(value = VoteController.URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,19 +58,11 @@ public class VoteController {
         return service.getTodayVote(authUserId());
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        int userId = authUserId();
-        service.delete(id, userId);
-    }
-
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") int id, @RequestParam int restaurant) {
         Restaurant getRestaurant = restaurantService.getByIdWithDishesForDate(restaurant, LocalDate.now(clock));
         VoteTo voteTo = new VoteTo(id, getRestaurant, LocalDateTime.now(clock));
-        assureIdConsistent(voteTo, id);
         service.updateFromTo(voteTo, authUserId());
     }
 

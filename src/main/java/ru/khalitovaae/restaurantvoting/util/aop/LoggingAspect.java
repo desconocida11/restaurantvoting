@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Aspect
 public class LoggingAspect {
 
-    @Before(value = "execution(public * ru.khalitovaae.restaurantvoting.web.*.*(..))")
-    public void beforeRestaurantController(JoinPoint joinPoint) {
+    @Before(value = "execution(public * ru.khalitovaae.restaurantvoting.web.*Controller.*(..))")
+    public void beforeController(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         final Logger log = LoggerFactory.getLogger(signature.getMethod().getDeclaringClass());
         log.info("method: {}", signature.getName());

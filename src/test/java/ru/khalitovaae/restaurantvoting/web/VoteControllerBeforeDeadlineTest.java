@@ -1,6 +1,5 @@
 package ru.khalitovaae.restaurantvoting.web;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,8 +9,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.khalitovaae.restaurantvoting.repository.VoteRepository;
 
 import java.time.*;
@@ -50,15 +47,5 @@ class VoteControllerBeforeDeadlineTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         VOTE_MATCHER.assertMatch(voteRepository.getById(VOTE_ID_TODAY), getUpdated(clock));
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    @Transactional(propagation = Propagation.NEVER)
-    void deleteBeforeDeadline() throws Exception {
-        Clock.fixed(BEFORE_DEADLINE.toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
-        perform(MockMvcRequestBuilders.delete(VoteController.URL + SLASH + VOTE_ID_TODAY))
-                .andExpect(status().isNoContent());
-        Assertions.assertNull(voteRepository.findById(VOTE_ID_TODAY).orElse(null));
     }
 }

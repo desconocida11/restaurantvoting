@@ -39,21 +39,14 @@ public class VoteService {
 
     @Transactional
     public void updateFromTo(VoteTo voteTo, int userId) {
-        Vote existed = getExisted(LocalDate.now(clock), userId);
+        checkIllegalRequest(!isVotingOpen(), "Voting is closed for today, you can't change the vote");
+        Vote existed = repository.getByDateAndUserId(LocalDate.now(clock), userId);
         checkIllegalRequestWithId(existed == null, "Vote doesn't exist for userId=", userId);
         checkIllegalRequest(voteTo.id() != existed.id(), "Inconsistency in votes' ids");
         existed.setRestaurant(voteTo.getRestaurant());
         existed.setDay(voteTo.getDayTime().toLocalDate());
         existed.setTime(voteTo.getDayTime().toLocalTime());
         repository.save(existed);
-    }
-
-    public void delete(int id, int userId) {
-        Vote existed = repository.getByIdAndUserId(id, userId);
-        checkIllegalRequestWithId(existed == null, "Vote doesn't exist for userId=", userId);
-        if (getExisted(LocalDate.now(clock), userId) != null) {
-            repository.delete(id, userId);
-        }
     }
 
     public Vote get(int id, int userId) {
@@ -72,18 +65,12 @@ public class VoteService {
         return repository.getAllByUserIdOrderByDayDesc(userId);
     }
 
-    private Vote getExisted(LocalDate day, int userId) {
-        Vote existed = repository.getByDateAndUserId(day, userId);
-        checkIllegalRequest(existed != null && !isVotingOpen(), "Voting is closed for today, you can't change the vote");
-        return existed;
-    }
-
     public long getCountByRestaurantIdPerDay(int restaurantId, LocalDate day) {
         return repository.countAllByRestaurantIdAndDay(restaurantId, day);
     }
 
     private boolean isVotingOpen() {
         LocalDateTime dateTime = LocalDateTime.now(clock);
-        return dateTime.toLocalDate().equals(LocalDate.now(clock)) && isBetweenHalfOpen(dateTime.toLocalTime(), LocalTime.MIN, deadline);
+        return isBetweenHalfOpen(dateTime.toLocalTime(), LocalTime.MIN, deadline);
     }
 }
