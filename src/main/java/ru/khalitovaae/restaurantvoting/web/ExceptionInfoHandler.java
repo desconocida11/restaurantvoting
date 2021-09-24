@@ -33,12 +33,14 @@ public class ExceptionInfoHandler {
     public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
     public static final String EXCEPTION_DUPLICATE_RESTAURANT_NAME = "exception.restaurant.duplicateName";
     public static final String EXCEPTION_DUPLICATE_DISH_NAME = "exception.dish.duplicateName";
+    public static final String EXCEPTION_DUPLICATE_VOTE = "exception.vote.duplicateVote";
     public static final String ERROR_UNDEFINED = "error.undefined";
 
     private static final Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
             "restaurants_name_unique_idx", EXCEPTION_DUPLICATE_RESTAURANT_NAME,
-            "name_day_restaurant_idx", EXCEPTION_DUPLICATE_DISH_NAME);
+            "name_day_restaurant_idx", EXCEPTION_DUPLICATE_DISH_NAME,
+            "vote_per_day_idx", EXCEPTION_DUPLICATE_VOTE);
 
     private final MessageSourceAccessor messageSourceAccessor;
 

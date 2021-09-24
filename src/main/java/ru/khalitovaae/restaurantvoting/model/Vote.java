@@ -35,11 +35,12 @@ public class Vote extends AbstractBaseEntity {
     @ToString.Exclude
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     @Getter
     @Setter
+    @ToString.Exclude
     private Restaurant restaurant;
 
     public Vote(Integer id, User user, Restaurant restaurant, LocalDate day, LocalTime time) {

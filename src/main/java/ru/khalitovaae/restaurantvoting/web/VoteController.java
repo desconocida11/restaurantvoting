@@ -16,7 +16,6 @@ import ru.khalitovaae.restaurantvoting.util.SecurityUtil;
 import java.net.URI;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -42,27 +41,26 @@ public class VoteController {
     }
 
     @GetMapping
-    public List<Vote> getAll() {
+    public List<VoteTo> getAll() {
         int userId = authUserId();
         return service.getByUser(userId);
     }
 
     @GetMapping("/{id}")
-    public Vote get(@PathVariable int id) {
+    public VoteTo get(@PathVariable int id) {
         int userId = authUserId();
         return service.get(id, userId);
     }
 
     @GetMapping("/today")
-    public Vote getTodayVote() {
+    public VoteTo getTodayVote() {
         return service.getTodayVote(authUserId());
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") int id, @RequestParam int restaurant) {
-        Restaurant getRestaurant = restaurantService.getByIdWithDishesForDate(restaurant, LocalDate.now(clock));
-        VoteTo voteTo = new VoteTo(id, getRestaurant, LocalDateTime.now(clock));
+        VoteTo voteTo = new VoteTo(id, restaurant, LocalDate.now(clock), LocalTime.now(clock));
         service.updateFromTo(voteTo, authUserId());
     }
 

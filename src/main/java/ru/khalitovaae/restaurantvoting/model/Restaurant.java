@@ -10,7 +10,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurants", uniqueConstraints =
+        {@UniqueConstraint(columnNames = {"name"}, name = "restaurants_name_unique_idx")})
 @NoArgsConstructor
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @ToString(callSuper = true)

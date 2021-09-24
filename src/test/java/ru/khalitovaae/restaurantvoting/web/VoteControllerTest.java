@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.khalitovaae.restaurantvoting.model.Vote;
 import ru.khalitovaae.restaurantvoting.repository.VoteRepository;
+import ru.khalitovaae.restaurantvoting.to.VoteTo;
 import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData;
 
@@ -33,12 +34,12 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getAll() throws Exception {
-        List<Vote> expected = VotesTestData.getAllVotesAdmin();
+        List<VoteTo> expected = VotesTestData.getAllVotesToAdmin();
         perform(MockMvcRequestBuilders.get(VoteController.URL))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_MATCHER.contentJson(expected));
+                .andExpect(VOTE_TO_MATCHER.contentJson(expected));
     }
 
     @Test
@@ -48,7 +49,7 @@ class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_MATCHER.contentJson(vote_today));
+                .andExpect(VOTE_TO_MATCHER.contentJson(new VoteTo(vote_today)));
     }
 
     @Test

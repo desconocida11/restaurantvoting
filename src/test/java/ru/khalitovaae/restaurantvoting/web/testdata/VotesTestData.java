@@ -2,6 +2,7 @@ package ru.khalitovaae.restaurantvoting.web.testdata;
 
 import lombok.experimental.UtilityClass;
 import ru.khalitovaae.restaurantvoting.model.Vote;
+import ru.khalitovaae.restaurantvoting.to.VoteTo;
 import ru.khalitovaae.restaurantvoting.web.MatcherFactory;
 
 import java.time.Clock;
@@ -14,6 +15,9 @@ import static ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData.pu
 
 @UtilityClass
 public class VotesTestData {
+
+    public static final MatcherFactory.Matcher<VoteTo> VOTE_TO_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(VoteTo.class);
 
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(Vote.class,
@@ -31,6 +35,10 @@ public class VotesTestData {
 
     public static List<Vote> getAllVotesAdmin() {
         return List.of(vote_today, vote_prev_admin);
+    }
+
+    public static List<VoteTo> getAllVotesToAdmin() {
+        return getAllVotesAdmin().stream().map(VoteTo::new).toList();
     }
 
     public static Vote getUpdated(Clock clock) {

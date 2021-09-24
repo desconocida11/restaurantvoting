@@ -2,6 +2,7 @@ package ru.khalitovaae.restaurantvoting.service;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.khalitovaae.restaurantvoting.model.Dish;
 import ru.khalitovaae.restaurantvoting.model.Restaurant;
@@ -17,6 +18,7 @@ import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.checkIllegalRe
 import static ru.khalitovaae.restaurantvoting.util.ValidationUtil.notFound;
 
 @Service
+@Transactional(readOnly = true)
 public class DishService {
     private final DishRepository repository;
     private final RestaurantRepository restaurantRepository;
@@ -26,6 +28,7 @@ public class DishService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @Transactional
     @CacheEvict(value = "restaurants", key = "#restaurantId")
     public List<Dish> createFromMenu(Menu menu, int restaurantId) {
         Assert.notNull(menu, "menu must not be null");
@@ -37,6 +40,7 @@ public class DishService {
         return repository.saveAll(dishList);
     }
 
+    @Transactional
     @CacheEvict(value = "restaurants", key = "#restaurant.id()")
     public void updateFromMenu(Menu menu, Restaurant restaurant) {
         Assert.notNull(menu, "menu must not be null");
@@ -51,11 +55,13 @@ public class DishService {
         repository.saveAll(dishList);
     }
 
+    @Transactional
     @CacheEvict(value = "restaurants", key = "#restaurant")
     public void deleteByIdAndRestaurantId(int id, int restaurant) {
         notFound(repository.deleteByIdAndRestaurantId(id, restaurant) != 1, "Dish with id=" + id + " not found in restaurant id=" + restaurant);
     }
 
+    @Transactional
     @CacheEvict(value = "restaurants", key = "#id")
     public void deleteByRestaurantIdAndDate(int id, LocalDate day) {
         notFound(repository.deleteAllByRestaurantIdAndDay(id, day) < 1, "Dishes for restaurant id=" + id + " and day=" + day + " not found");
