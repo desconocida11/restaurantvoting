@@ -38,7 +38,6 @@ public class VoteService {
         this.clock = clock;
     }
 
-    @Transactional
     public Vote create(Vote vote) {
         return repository.save(vote);
     }
@@ -55,7 +54,6 @@ public class VoteService {
         existed.setTime(voteTo.getTime());
         repository.save(existed);
     }
-
 
     public VoteTo get(int id, int userId) {
         Vote vote = repository.getByIdAndUserId(id, userId);
