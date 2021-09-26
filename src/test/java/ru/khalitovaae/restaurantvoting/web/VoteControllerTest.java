@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.khalitovaae.restaurantvoting.model.Vote;
 import ru.khalitovaae.restaurantvoting.repository.VoteRepository;
 import ru.khalitovaae.restaurantvoting.to.VoteTo;
@@ -73,5 +75,14 @@ class VoteControllerTest extends AbstractControllerTest {
         Assertions.assertThat(created.getTime()).isCloseTo(expected.getTime(), within(2, ChronoUnit.SECONDS));
         VOTE_TIME_MATCHER.assertMatch(created, expected);
         VOTE_TIME_MATCHER.assertMatch(voteRepository.getById(newId), expected);
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    @Transactional(propagation = Propagation.NEVER)
+    void createWithLocationDuplicate() throws Exception {
+        perform(MockMvcRequestBuilders.post(VoteController.URL + "?restaurant=5")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity());
     }
 }
