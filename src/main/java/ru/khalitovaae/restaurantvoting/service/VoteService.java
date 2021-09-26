@@ -38,6 +38,7 @@ public class VoteService {
         this.clock = clock;
     }
 
+    @Transactional
     public Vote create(Vote vote) {
         return repository.save(vote);
     }
