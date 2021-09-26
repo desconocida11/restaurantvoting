@@ -52,6 +52,12 @@ public class RestaurantService {
         return restaurants;
     }
 
+    /*
+    A restaurant and its menu cached only for today (condition date==now()).
+    For previous days data is not cached because that query is rare.
+    Cache evicts by restaurant_id when restaurant or menu has changed.
+    General eviction at midnight
+    */
     @Cacheable(value = "restaurants", key = "#id", condition = "#date eq T(java.time.LocalDate).now()")
     public Restaurant getByIdWithDishesForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.getByIdWithDishes(id, date);

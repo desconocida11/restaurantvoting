@@ -9,11 +9,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.khalitovaae.restaurantvoting.model.User;
 import ru.khalitovaae.restaurantvoting.repository.UserRepository;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.AbstractControllerTest;
 import ru.khalitovaae.restaurantvoting.web.json.JsonUtil;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,7 +106,6 @@ class ProfileControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.put(URL).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(ErrorType.VALIDATION_ERROR.name())));
+                .andExpect(status().isUnprocessableEntity());
     }
 }

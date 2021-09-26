@@ -28,8 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.userService = userService;
     }
 
-//    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled"/>
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return createDelegatingPasswordEncoder();
@@ -48,7 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/profile/register").anonymous()
-                .antMatchers("/login").anonymous()
                 .antMatchers("/admin", "/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers("/profile").hasRole(Role.USER.name())
                 .antMatchers(HttpMethod.GET, "/restaurants/**").permitAll()

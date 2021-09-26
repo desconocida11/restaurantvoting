@@ -8,7 +8,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.khalitovaae.restaurantvoting.repository.DishRepository;
 import ru.khalitovaae.restaurantvoting.to.Menu;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.json.JsonUtil;
 import ru.khalitovaae.restaurantvoting.web.testdata.DishTestData;
 
@@ -114,7 +113,6 @@ class MenuControllerTest extends AbstractControllerTest {
     void deleteTodayMenuWithVotes() throws Exception {
         perform(MockMvcRequestBuilders.delete(MenuController.URL + SLASH + METROPOL_ID + MenuController.TODAY_URL)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(errorType(ErrorType.VALIDATION_ERROR));
+                .andExpect(status().isUnprocessableEntity());
     }
 }

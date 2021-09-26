@@ -10,21 +10,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData.vote_prev_user;
-
 @UtilityClass
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "password");
-    public static MatcherFactory.Matcher<User> WITH_VOTES_MATCHER =
-            MatcherFactory.usingAssertions(User.class,
-//     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
-                    (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "votes.user", "password", "votes.restaurant.dishes").isEqualTo(e),
-                    (a, e) -> {
-                        throw new UnsupportedOperationException();
-                    });
 
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;
@@ -52,11 +41,5 @@ public class UserTestData {
 
     public static String jsonWithPassword(User user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);
-    }
-
-    public static User getWithVotes() {
-        User withVotes = new User(user);
-        withVotes.setVotes(List.of(vote_prev_user));
-        return withVotes;
     }
 }

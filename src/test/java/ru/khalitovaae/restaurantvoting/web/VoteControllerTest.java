@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.khalitovaae.restaurantvoting.model.Vote;
 import ru.khalitovaae.restaurantvoting.repository.VoteRepository;
 import ru.khalitovaae.restaurantvoting.to.VoteTo;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.testdata.VotesTestData;
 
 import java.time.Clock;
@@ -58,8 +57,7 @@ class VoteControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(VoteController.URL + SLASH + VOTE_ID_TODAY))
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(errorType(ErrorType.DATA_NOT_FOUND));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test

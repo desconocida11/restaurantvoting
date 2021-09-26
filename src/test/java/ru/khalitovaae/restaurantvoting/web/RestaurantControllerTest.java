@@ -8,7 +8,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.khalitovaae.restaurantvoting.model.Restaurant;
 import ru.khalitovaae.restaurantvoting.repository.RestaurantRepository;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.json.JsonUtil;
 import ru.khalitovaae.restaurantvoting.web.testdata.RestaurantTestData;
 
@@ -76,8 +75,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     void deleteConstraint() throws Exception {
         perform(MockMvcRequestBuilders.delete(RestaurantController.URL + SLASH + METROPOL_ID))
                 .andDo(print())
-                .andExpect(status().isConflict())
-                .andExpect(errorType(ErrorType.DATA_ERROR));
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

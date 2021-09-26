@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 
 import java.time.*;
 
@@ -40,7 +39,6 @@ class VoteControllerAfterDeadlineTest extends AbstractControllerTest {
         Clock.fixed(AFTER_DEADLINE.toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
         perform(MockMvcRequestBuilders.put(VoteController.URL + SLASH + VOTE_ID_TODAY + "?restaurant=" + PUSHKIN_ID)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(errorType(ErrorType.VALIDATION_ERROR));
+                .andExpect(status().isUnprocessableEntity());
     }
 }

@@ -11,10 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.khalitovaae.restaurantvoting.model.Role;
 import ru.khalitovaae.restaurantvoting.model.User;
 import ru.khalitovaae.restaurantvoting.repository.UserRepository;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.web.AbstractControllerTest;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,8 +23,6 @@ import static ru.khalitovaae.restaurantvoting.web.testdata.UserTestData.*;
 class AdminUserControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminController.URL + '/';
-
-    private static final String WITH_VOTES_URL = "/with-votes";
 
     @Autowired
     private UserRepository userRepository;
@@ -195,8 +191,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(updated, "password")))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(ErrorType.VALIDATION_ERROR.name())));
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -208,7 +203,6 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(expected, "newPass")))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(ErrorType.VALIDATION_ERROR.name())));
+                .andExpect(status().isUnprocessableEntity());
     }
 }

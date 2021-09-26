@@ -1,35 +1,14 @@
 package ru.khalitovaae.restaurantvoting.util;
 
 import lombok.experimental.UtilityClass;
-import org.slf4j.Logger;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 import ru.khalitovaae.restaurantvoting.HasId;
-import ru.khalitovaae.restaurantvoting.util.exception.ErrorType;
 import ru.khalitovaae.restaurantvoting.util.exception.IllegalRequestDataException;
 import ru.khalitovaae.restaurantvoting.util.exception.NotFoundException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.*;
-import java.util.Set;
-
 @UtilityClass
 public class ValidationUtil {
-    private static final Validator validator;
-
-    static {
-        //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        //  From Javadoc: implementations of this interface must be thread-safe
-        validator = factory.getValidator();
-    }
-
-    public static <T> void validate(T bean) {
-        Set<ConstraintViolation<T>> violations = validator.validate(bean);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
-        }
-    }
 
     public static void notFoundWithId(boolean condition, String message, int id) {
         notFound(condition, message + id);
@@ -70,19 +49,5 @@ public class ValidationUtil {
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);
         return rootCause != null ? rootCause : t;
-    }
-
-    public static String getMessage(Throwable e) {
-        return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
-    }
-
-    public static Throwable logAndGetRootCause(Logger log, HttpServletRequest req, Exception e, boolean logStackTrace, ErrorType errorType) {
-        Throwable rootCause = ValidationUtil.getRootCause(e);
-        if (logStackTrace) {
-            log.error(errorType + " at request " + req.getRequestURL(), rootCause);
-        } else {
-            log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
-        }
-        return rootCause;
     }
 }
